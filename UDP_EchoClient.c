@@ -5,6 +5,9 @@
 
   Also, there might be a problem with the delay function that 
   was supplied from the book.
+
+  The gettimeoftheday seems to be working though as can be seen
+  in the attached screenshot after running ./UDP_client.
 */
 
 #include <stdlib.h>
