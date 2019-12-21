@@ -1,4 +1,11 @@
 // UDP Echo Client
+/*
+  We only calculate delay with respect to timely receipt of ACK
+  from the UDP Server. That we way we can resend the frame.
+
+  Also, there might be a problem with the delay function that 
+  was supplied from the book.
+*/
 
 #include <stdlib.h>
 #include <strings.h>
@@ -15,13 +22,7 @@
 #define MAXLEN                  4096
 #define DEFLEN                  64
 
-long delay(struct timeval t1, struct timeval t2)
-{
-        long d;
-        d = (t2.tv_sec - t1.tv_sec) * 1000;
-        d += ((t2.tv_usec - t1.tv_usec + 500) / 1000);
-        return(d);
-}
+long delay(struct timeval t1, struct timeval t2);
 int main(int argc, char **argv)
 {
     int     data_size = DEFLEN, port = SERVER_UDP_PORT;
@@ -92,11 +93,26 @@ int main(int argc, char **argv)
         if (strncmp(rbuf, "ACK", 3) != 0) {
           fprintf(stderr, "ack error\n");
           // exit(1);
-        } else 
-            printf("rbuf: %s\n", rbuf);
+        }
     }
     // check rbuf below, check what's being sent from the server
     memset(rbuf, 0, sizeof(rbuf));
+    if (recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
+            &server, &server_len) < 0) {
+        fprintf(stderr, "recvfrom error\n");
+        exit(1);
+    }
+    gettimeofday(&end, NULL); /* end delay measurement */
+    printf("Delay: %ld microseconds\n", delay(end, start));
+    if (strncmp(sbuf, rbuf, data_size) != 0)
+        printf("Data is corrupted\n");
     close(sd);
     return(0);
+}
+
+long delay(struct timeval t1, struct timeval t2) {
+        long d;
+        d = (t2.tv_sec - t1.tv_sec) * 1000;
+        d += ((t2.tv_usec - t1.tv_usec + 500) / 1000);
+        return(d);
 }

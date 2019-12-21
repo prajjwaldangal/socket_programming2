@@ -55,15 +55,23 @@ int main(int argc, char **argv)
 		      fprintf(stderr, "Can't receive datagram\n");
 		      exit(1);
 		}
-		printf("Server received: %s\nSending ack\n", buf); 
+		printf("Server received: %s, sending ack\n", buf); 
 		// send ack
 		if (sendto(sd, ack_msg, 3, 0, 
 		(struct sockaddr *)&client, client_len) != 3) {
 		      fprintf(stderr, "Can't send acknowledgement\n");
 		      exit(1);
 		}
-		printf("Sent to client: %s\n", ack_msg);
+		printf("%s sent to client \n", ack_msg);
 		printf("#####################################\n");
+		// send the actual frames
+		if (sendto(sd, buf, n, 0, 
+				(struct sockaddr *)&client, client_len) != n) {
+		    fprintf(stderr, "Can't send datagram\n");
+		    exit(1);
+		} else {
+			printf("UDP Communication successful.\n");
+		}
 	}
 	close(sd);
 	return(0);
