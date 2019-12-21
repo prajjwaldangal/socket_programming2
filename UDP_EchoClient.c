@@ -86,15 +86,17 @@ int main(int argc, char **argv)
         fprintf(stderr, "sendto error\n");
         exit(1);
     }
-    if (recvfrom(sd, rbuf, 3, 0, (struct sockaddr *)
-        &server, &server_len) < 0 && strncmp()) {
-        fprintf(stderr, "recvfrom error\n");
-        exit(1);
+    int res = recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
+        &server, &server_len);
+    if (! (res < 0)) {
+        if (strncmp(rbuf, "ACK", 3) != 0) {
+          fprintf(stderr, "ack error\n");
+          // exit(1);
+        } else 
+            printf("rbuf: %s\n", rbuf);
     }
-    printf("Client received: %s\n", rbuf);
-    gettimeofday(&end, NULL); /* end delay measurement */
-    if (strncmp(sbuf, rbuf, data_size) != 0)
-        printf("Data is corrupted\n");
+    // check rbuf below, check what's being sent from the server
+    memset(rbuf, 0, sizeof(rbuf));
     close(sd);
     return(0);
 }
