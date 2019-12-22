@@ -106,7 +106,7 @@ int main(int argc, char **argv)
         exit(1);
     }
     gettimeofday(&end, NULL); /* end delay measurement */
-    printf("Delay: %ld microseconds\n", delay(end, start));
+    printf("Delay: %ld microseconds\n", delay(start, end));
     if (strncmp(sbuf, rbuf, data_size) != 0)
         printf("Data is corrupted\n");
     close(sd);
