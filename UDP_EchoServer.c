@@ -63,7 +63,6 @@ int main(int argc, char **argv)
 		      exit(1);
 		}
 		printf("%s sent to client \n", ack_msg);
-		printf("#####################################\n");
 		// send the actual frames
 		if (sendto(sd, buf, n, 0, 
 				(struct sockaddr *)&client, client_len) != n) {
@@ -72,6 +71,7 @@ int main(int argc, char **argv)
 		} else {
 			printf("UDP Communication successful.\n");
 		}
+		printf("#####################################\n");
 	}
 	close(sd);
 	return(0);
