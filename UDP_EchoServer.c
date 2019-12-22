@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 		// send ack
 		if (sendto(sd, ack_msg, 3, 0, 
 		(struct sockaddr *)&client, client_len) != 3) {
-		      fprintf(stderr, "Can't send acknowledgement\n");
+		      fprintf(stderr, " Sending acknowledgement failed\n");
 		      exit(1);
 		}
 		printf("%s sent to client \n", ack_msg);
@@ -68,8 +68,6 @@ int main(int argc, char **argv)
 				(struct sockaddr *)&client, client_len) != n) {
 		    fprintf(stderr, "Can't send datagram\n");
 		    exit(1);
-		} else {
-			printf("UDP Communication successful.\n");
 		}
 		printf("#####################################\n");
 	}

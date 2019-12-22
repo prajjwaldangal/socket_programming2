@@ -24,6 +24,7 @@
 #define SERVER_UDP_PORT         5000
 #define MAXLEN                  4096
 #define DEFLEN                  64
+#define MAX_ACK_DELAY           10
 
 long delay(struct timeval t1, struct timeval t2);
 int main(int argc, char **argv)
@@ -35,6 +36,7 @@ int main(int argc, char **argv)
     struct  sockaddr_in     server;
     struct  timeval         start, end;
 	  unsigned long address;
+    long d;
 
     pname = argv[0];
    	argc--;
@@ -83,6 +85,7 @@ int main(int argc, char **argv)
         j = (i < 26) ? i : i % 26;
         sbuf[i] = 'a' + j;
     } // construct data to send to the server
+    printf("UDP request will timeout after 10s\n");
     gettimeofday(&start, NULL); /* start delay measurement */
 	  server_len = sizeof(server);
     if (sendto(sd, sbuf, data_size, 0, (struct sockaddr *)
@@ -98,15 +101,20 @@ int main(int argc, char **argv)
           // exit(1);
         }
     }
-    // check rbuf below, check what's being sent from the server
-    memset(rbuf, 0, sizeof(rbuf));
+    gettimeofday(&end, NULL);
+    d = delay(start, end);
+    if (d < 10 * 10^6) {
+      printf("ACK received in client.\n");
+    } else {
+      printf("Request timeout\n");
+    }
+    // memset(rbuf, 0, sizeof(rbuf));
     if (recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
             &server, &server_len) < 0) {
         fprintf(stderr, "recvfrom error\n");
         exit(1);
     }
-    gettimeofday(&end, NULL); /* end delay measurement */
-    printf("Delay: %ld microseconds\n", delay(start, end));
+    // gettimeofday(&end, NULL); /* end delay measurement */ 
     if (strncmp(sbuf, rbuf, data_size) != 0)
         printf("Data is corrupted\n");
     close(sd);
