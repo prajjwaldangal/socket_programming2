@@ -93,22 +93,22 @@ int main(int argc, char **argv)
         fprintf(stderr, "sendto error\n");
         exit(1);
     }
-    int res = recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
-        &server, &server_len);
-    if (! (res < 0)) {
-        if (strncmp(rbuf, "ACK", 3) != 0) {
-          fprintf(stderr, "ack error\n");
-          // exit(1);
-        }
+    while (!(recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
+        &server, &server_len) < 0)){
+            if (strncmp(rbuf, "ACK", 3) == 0){
+              break;
+            } else {
+              gettimeofday(&end, NULL);
+              d = delay(start, end);
+              if (d < 10 * 10^6) {
+                printf("ACK received in client.\n");
+              } else {
+                printf("Request timeout.\nProgram exiting..");
+                exit(1)
+              }
+              fprintf(stderr, "ack error\n");
+            }
     }
-    gettimeofday(&end, NULL);
-    d = delay(start, end);
-    if (d < 10 * 10^6) {
-      printf("ACK received in client.\n");
-    } else {
-      printf("Request timeout\n");
-    }
-    // memset(rbuf, 0, sizeof(rbuf));
     if (recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
             &server, &server_len) < 0) {
         fprintf(stderr, "recvfrom error\n");
