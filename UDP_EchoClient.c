@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <stdio.h>
+#include <math.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -24,7 +25,7 @@
 #define SERVER_UDP_PORT         5000
 #define MAXLEN                  4096
 #define DEFLEN                  64
-#define MAX_ACK_DELAY           10
+#define MAX_ACK_DELAY           pow(10, 7)
 
 long delay(struct timeval t1, struct timeval t2);
 int main(int argc, char **argv)
@@ -95,18 +96,18 @@ int main(int argc, char **argv)
     }
     while (!(recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)
         &server, &server_len) < 0)){
-            if (strncmp(rbuf, "ACK", 3) == 0){
+            gettimeofday(&end, NULL);
+            d = delay(start, end);
+            if (strncmp(rbuf, "ACK", 3) == 0 && d < MAX_ACK_DELAY){
+              printf("ACK received in client.\n");
               break;
             } else {
-              gettimeofday(&end, NULL);
-              d = delay(start, end);
-              if (d < 10 * 10^6) {
-                printf("ACK received in client.\n");
+              if (d < MAX_ACK_DELAY) {
+                continue;
               } else {
                 printf("Request timeout.\nProgram exiting..");
-                exit(1)
+                exit(1);
               }
-              fprintf(stderr, "ack error\n");
             }
     }
     if (recvfrom(sd, rbuf, MAXLEN, 0, (struct sockaddr *)

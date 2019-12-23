@@ -50,6 +50,7 @@ int main(int argc, char **argv)
 
 	while (1) {
 		client_len = sizeof(client);
+		memset(buf, 0, MAXLEN);
 		if ((n = recvfrom(sd, buf, MAXLEN, 0, 
 		(struct sockaddr *)&client, &client_len)) < 0) {
 		      fprintf(stderr, "Can't receive datagram\n");
