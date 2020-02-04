@@ -1,3 +1,4 @@
+![Alt text](./UDP_successful.png?raw=true "Optional Title")
 UDP_successful.png contains one screenshot of the UDP server responding to
 the client's requests. Please download it or zoom out on the 
 browser and have a look.
